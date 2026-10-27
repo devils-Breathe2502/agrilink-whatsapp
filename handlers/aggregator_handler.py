@@ -4,8 +4,13 @@ Coordinates village-level produce collection, digital grading assay receipts, an
 """
 
 from typing import Dict, Any
-from agrilink_whatsapp.database import AgriLinkDB
-from agrilink_whatsapp.services.traceability_service import TraceabilityService
+
+try:
+    from agrilink_whatsapp.database import AgriLinkDB
+    from agrilink_whatsapp.services.traceability_service import TraceabilityService
+except ImportError:
+    from database import AgriLinkDB
+    from services.traceability_service import TraceabilityService
 
 def get_aggregator_menu(name: str = "Aggregator") -> str:
     return (
@@ -38,7 +43,6 @@ def handle_aggregator_message(profile: Dict[str, Any], text: str) -> str:
                 f"📋 *Today's Morning Pickup Route ({len(manifest)} Stops)*\n"
                 f"━━━━━━━━━━━━━━━━━━━━━━"
             ]
-            total_est = 0
             for idx, item in enumerate(manifest, 1):
                 lines.append(f"{idx}. *{item['farmer']}* ({item['village']})\n   • Produce: {item['crop']} ({item['qty']})")
             lines.append("━━━━━━━━━━━━━━━━━━━━━━")

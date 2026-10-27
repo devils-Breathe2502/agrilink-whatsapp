@@ -6,13 +6,23 @@ Supports Twilio Messaging API and Meta WhatsApp Cloud API with graceful mock mod
 import logging
 import requests
 from xml.sax.saxutils import escape as xml_escape
-from agrilink_whatsapp.config import (
-    TWILIO_ACCOUNT_SID,
-    TWILIO_AUTH_TOKEN,
-    TWILIO_WHATSAPP_NUMBER,
-    WHATSAPP_CLOUD_API_TOKEN,
-    WHATSAPP_PHONE_NUMBER_ID
-)
+
+try:
+    from agrilink_whatsapp.config import (
+        TWILIO_ACCOUNT_SID,
+        TWILIO_AUTH_TOKEN,
+        TWILIO_WHATSAPP_NUMBER,
+        WHATSAPP_CLOUD_API_TOKEN,
+        WHATSAPP_PHONE_NUMBER_ID
+    )
+except ImportError:
+    from config import (
+        TWILIO_ACCOUNT_SID,
+        TWILIO_AUTH_TOKEN,
+        TWILIO_WHATSAPP_NUMBER,
+        WHATSAPP_CLOUD_API_TOKEN,
+        WHATSAPP_PHONE_NUMBER_ID
+    )
 
 logger = logging.getLogger("AgriLinkWhatsAppClient")
 

@@ -4,7 +4,11 @@ Manages recurring standing orders, meal-based bulk procurement, and consolidated
 """
 
 from typing import Dict, Any
-from agrilink_whatsapp.database import AgriLinkDB
+
+try:
+    from agrilink_whatsapp.database import AgriLinkDB
+except ImportError:
+    from database import AgriLinkDB
 
 def get_institutional_menu(name: str = "Buyer", inst_name: str = "Institution") -> str:
     return (

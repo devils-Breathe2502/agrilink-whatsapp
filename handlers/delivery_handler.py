@@ -4,7 +4,11 @@ Manages multi-stop route links, OTP delivery handovers, and daily logistics earn
 """
 
 from typing import Dict, Any
-from agrilink_whatsapp.database import AgriLinkDB
+
+try:
+    from agrilink_whatsapp.database import AgriLinkDB
+except ImportError:
+    from database import AgriLinkDB
 
 def get_delivery_menu(name: str = "Driver", reg: str = "Vehicle") -> str:
     return (

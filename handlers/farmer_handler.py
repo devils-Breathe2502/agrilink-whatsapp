@@ -4,9 +4,15 @@ Handles Voice Note harvest pre-declarations, APMC rate checks, and UPI payout in
 """
 
 from typing import Dict, Any, Tuple
-from agrilink_whatsapp.database import AgriLinkDB
-from agrilink_whatsapp.services.apmc_service import APMCPricingEngine
-from agrilink_whatsapp.services.voice_nlp_service import VoiceNLPService
+
+try:
+    from agrilink_whatsapp.database import AgriLinkDB
+    from agrilink_whatsapp.services.apmc_service import APMCPricingEngine
+    from agrilink_whatsapp.services.voice_nlp_service import VoiceNLPService
+except ImportError:
+    from database import AgriLinkDB
+    from services.apmc_service import APMCPricingEngine
+    from services.voice_nlp_service import VoiceNLPService
 
 def get_farmer_menu(lang: str = "kn", farmer_name: str = "Farmer") -> str:
     if lang == "kn":

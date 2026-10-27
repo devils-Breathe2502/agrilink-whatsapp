@@ -4,8 +4,13 @@ Manages conversational fresh produce ordering, live order tracking, and farm pro
 """
 
 from typing import Dict, Any, Optional
-from agrilink_whatsapp.database import AgriLinkDB, FRESH_CATALOG
-from agrilink_whatsapp.services.traceability_service import TraceabilityService
+
+try:
+    from agrilink_whatsapp.database import AgriLinkDB, FRESH_CATALOG
+    from agrilink_whatsapp.services.traceability_service import TraceabilityService
+except ImportError:
+    from database import AgriLinkDB, FRESH_CATALOG
+    from services.traceability_service import TraceabilityService
 
 def get_customer_menu(name: str = "Customer") -> str:
     return (
