@@ -8,6 +8,7 @@ import sys
 import json
 import urllib.parse
 from fastapi import FastAPI, Request, Response, HTTPException
+from fastapi.responses import HTMLResponse
 
 # Ensure local imports work whether run from repo root or package root
 try:
@@ -15,11 +16,13 @@ try:
     from agrilink_whatsapp.router import route_inbound_whatsapp
     from agrilink_whatsapp.services.whatsapp_client import WhatsAppClient
     from agrilink_whatsapp.database import SEED_PROFILES, HARVEST_DECLARATIONS, DISPUTES
+    from agrilink_whatsapp.simulator_ui import get_simulator_html
 except ImportError:
     from config import WHATSAPP_VERIFY_TOKEN
     from router import route_inbound_whatsapp
     from services.whatsapp_client import WhatsAppClient
     from database import SEED_PROFILES, HARVEST_DECLARATIONS, DISPUTES
+    from simulator_ui import get_simulator_html
 
 app = FastAPI(
     title="AgriLink WhatsApp Integration Service",
@@ -28,8 +31,33 @@ app = FastAPI(
 )
 
 
-@app.get("/")
-async def root():
+# Live Interactive WhatsApp Web Simulator
+@app.get("/", response_class=HTMLResponse)
+@app.get("/demo", response_class=HTMLResponse)
+async def live_whatsapp_simulator():
+    return HTMLResponse(content=get_simulator_html(), status_code=200)
+
+
+# Interactive Simulator Message Dispatcher
+@app.post("/api/v1/whatsapp/simulate")
+async def simulate_whatsapp_message(request: Request):
+    data = await request.json()
+    from_phone = data.get("from_phone", "+919876500001")
+    message = data.get("message", "")
+    media_url = data.get("media_url")
+    media_content_type = data.get("media_content_type")
+
+    reply = route_inbound_whatsapp(
+        from_phone=from_phone,
+        message_text=message,
+        media_url=media_url,
+        media_content_type=media_content_type
+    )
+    return {"reply": reply, "from_phone": from_phone}
+
+
+@app.get("/api/v1/whatsapp/status")
+async def root_status():
     return {
         "project": "AgriLink - Farm-to-Consumer Digital Marketplace",
         "service": "WhatsApp Conversational Gateway (SFIC 2026)",
