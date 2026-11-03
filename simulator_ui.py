@@ -59,6 +59,27 @@ def get_simulator_html() -> str:
             background: #ffffff; color: #111b21; font-weight: 600;
             font-size: 13px; cursor: pointer; outline: none;
         }
+        .btn-qr-modal {
+            background: #25d366; color: #075e54; border: none;
+            font-weight: 700; font-size: 12.5px; padding: 6px 14px;
+            border-radius: 20px; cursor: pointer; display: flex;
+            align-items: center; gap: 5px; box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+            transition: all 0.2s;
+        }
+        .btn-qr-modal:hover { background: #1ebe5d; color: white; }
+
+        /* QR CODE MODAL */
+        .qr-overlay {
+            display: none; position: absolute; inset: 0;
+            background: rgba(0,0,0,0.7); z-index: 100;
+            justify-content: center; align-items: center;
+        }
+        .qr-card {
+            background: white; border-radius: 16px; padding: 24px;
+            text-align: center; max-width: 340px; box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            animation: fadeIn 0.2s ease-out;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
 
         /* CHIPS BAR (Quick Actions) */
         .quick-chips {
@@ -224,7 +245,8 @@ def get_simulator_html() -> str:
             </div>
         </div>
         <div class="role-selector-wrap">
-            <label for="roleSelect">Switch Persona:</label>
+            <button class="btn-qr-modal" onclick="toggleQRModal(true)">📱 Scan QR</button>
+            <label for="roleSelect">Persona:</label>
             <select id="roleSelect" class="role-select" onchange="onRoleChange()">
                 <option value="+919876500001" selected>🚜 Farmer (Shivanna - Mandya)</option>
                 <option value="+919876500002">🏢 Aggregator (Lakshmi - Maddur Hub)</option>
@@ -257,6 +279,18 @@ def get_simulator_html() -> str:
 
     <div class="footer-note">
         AgriLink Multi-Actor Gateway • Powered by <b>FastAPI</b> & <b>68-10-14-8 Split Pricing Engine</b>
+    </div>
+
+    <!-- QR MODAL OVERLAY -->
+    <div class="qr-overlay" id="qrOverlay" onclick="toggleQRModal(false)">
+        <div class="qr-card" onclick="event.stopPropagation()">
+            <h3 style="font-size: 16px; font-weight: 700; color: #008069; margin-bottom: 4px;">🌾 AgriLink WhatsApp Assistant</h3>
+            <p style="font-size: 12px; color: #54656f; margin-bottom: 14px;">Scan with your phone camera to chat on mobile</p>
+            <img src="data:image/png;base64,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" 
+                 alt="AgriLink QR Code" style="width: 220px; height: 220px; border-radius: 8px; margin: 0 auto 12px auto; display: block; border: 1px solid #d1d7db;">
+            <p style="font-size: 11px; color: #008069; font-weight: 600; margin-bottom: 12px;">agrilink-whatsapp.onrender.com</p>
+            <button onclick="toggleQRModal(false)" style="background: #008069; color: white; border: none; padding: 8px 24px; border-radius: 20px; font-weight: 600; font-size: 13px; cursor: pointer;">Close</button>
+        </div>
     </div>
 </div>
 
@@ -404,6 +438,11 @@ def get_simulator_html() -> str:
             btn.onclick = () => sendTextMessage(p.text, !!p.isVoice);
             container.appendChild(btn);
         });
+    }
+
+    function toggleQRModal(show) {
+        const overlay = document.getElementById("qrOverlay");
+        overlay.style.display = show ? "flex" : "none";
     }
 
     function onRoleChange() {

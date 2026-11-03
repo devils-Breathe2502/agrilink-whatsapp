@@ -1,76 +1,48 @@
-# 🌾 AgriLink WhatsApp Omnichannel Integration
+# 🌾 AgriLink — Official Meta WhatsApp Cloud API Service
 **Farm-to-Consumer Digital Marketplace (Seva First Innovation Challenge 2026)**
 
-This module provides a unified WhatsApp conversational gateway tailored for all 5 AgriLink actors:
-1. **Farmer** (Mandya, Karnataka) — Regional voice notes, APMC mandi rates, UPI payouts.
-2. **Local Aggregator** (Maddur SHG Hub) — Pickup manifests, weighment logging & digital assay receipts.
-3. **Retail Customer** (Bengaluru) — Catalog discovery, live tracking, OTP, farm provenance cards, photo disputes.
-4. **Institutional Buyer** (Hostel/Hospital) — Standing orders, ad-hoc bulk orders, monthly GST invoices.
-5. **Delivery Partner** (Electric 3-Wheeler) — Multi-stop route navigation, OTP handovers, daily 14% logistics payouts.
+Direct, official integration with **Meta (Facebook) WhatsApp Business Cloud API**.
+* **Zero Middlemen:** No Twilio, no extra fees.
+* **1,000 Free Monthly Conversations** included directly by Meta.
+* **Full Multi-Actor Support:** Farmer (Mandi pricing, 68% split, Voice notes), Aggregator (Hub manifests), Customer (Catalog, Tracking, OTP, Provenance), Institution (Standing orders), and Delivery Fleet.
 
 ---
 
-## 📂 Project Structure
+## 🚀 How to Connect Real WhatsApp via Meta (3 Simple Steps)
 
-```text
-agrilink_whatsapp/
-├── config.py                  # Credentials, business split ratios (68-10-14-8), languages
-├── database.py                # Data access layer with Supabase integration & realistic seed data
-├── schema.sql                 # Master PostgreSQL / Supabase schema with RLS & PostGIS
-├── main.py                    # Production FastAPI server & universal webhooks
-├── router.py                  # Omnichannel actor dispatcher
-├── services/
-│   ├── apmc_service.py        # Dynamic pricing engine (APMC rates + grade multipliers)
-│   ├── voice_nlp_service.py   # Regional speech transcription & entity extraction (Kannada/Hindi)
-│   ├── traceability_service.py# Farm provenance passports (M11) & digital assay receipts
-│   └── whatsapp_client.py     # Twilio & Meta Cloud API outbound messaging
-├── handlers/
-│   ├── farmer_handler.py      # Actor 1: Voice harvest declarations & mandi rates
-│   ├── aggregator_handler.py  # Actor 2: Collection manifests & hub logging
-│   ├── customer_handler.py    # Actor 3: Conversational commerce & photo disputes
-│   ├── institutional_handler.py# Actor 4: Standing orders & GST tax invoicing
-│   └── delivery_handler.py    # Actor 5: Multi-stop fleet routing & OTP release
-├── test_simulation.py         # Automated simulation of all 5 actor lifecycles
-├── requirements.txt           # Python dependencies
-└── .env.example               # Environment variables template
+### Step 1: Push Code to GitHub
+```bash
+cd "C:\Users\himch\Documents\Downloads\SAD Project\agrilink_whatsapp"
+git add .
+git commit -m "Migrate to official Meta WhatsApp Cloud API"
+git push
 ```
+Render automatically rebuilds and makes your webhook live at:  
+👉 `https://agrilink-whatsapp.onrender.com/webhook`
+
+### Step 2: Create a Free Meta Developer App
+1. Go to **[developers.facebook.com](https://developers.facebook.com)** and sign in with your Facebook account.
+2. Click **My Apps** ➔ **Create App**.
+3. Select **Other** ➔ Type: **Business**.
+4. App Name: `AgriLink Assistant` ➔ Click **Create App**.
+5. On the Products Dashboard, find **WhatsApp** and click **Set up**.
+
+### Step 3: Configure Webhook on Meta
+1. On the left menu under WhatsApp, click **Configuration**.
+2. Under **Webhook**, click **Edit**:
+   * **Callback URL:** `https://agrilink-whatsapp.onrender.com/webhook`
+   * **Verify Token:** `agrilink_sfic_2026_secret`
+3. Click **Verify and Save**.
+4. Click **Manage Webhook Fields** and check **`messages`** ➔ Click **Save**.
+
+### Step 4: Add Environment Variables in Render
+In your **Render Dashboard** (Settings ➔ Environment Variables):
+* `WHATSAPP_CLOUD_API_TOKEN` = *(Your Access Token from Meta)*
+* `WHATSAPP_PHONE_NUMBER_ID` = *(Your Phone Number ID from Meta)*
+* `WHATSAPP_VERIFY_TOKEN` = `agrilink_sfic_2026_secret`
 
 ---
 
-## 🚀 Quick Start Guide
-
-### 1. Install Dependencies
-```bash
-pip install -r requirements.txt
-```
-
-### 2. Configure Environment Variables
-Copy `.env.example` to `.env` and add your Twilio or Meta Cloud API credentials.
-
-### 3. Run FastAPI WhatsApp Gateway
-```bash
-uvicorn agrilink_whatsapp.main:app --host 0.0.0.0 --port 8000 --reload
-```
-
-### 4. Connect to WhatsApp via Ngrok
-```bash
-ngrok http 8000
-```
-- In the **Twilio Console** > **Messaging** > **WhatsApp Sandbox Settings**, set:
-  - **"When a message comes in"**: `https://<your-ngrok-subdomain>.ngrok-free.app/api/v1/whatsapp/webhook` (HTTP POST)
-
----
-
-## 📱 Test Profiles & Demo Numbers
-
-You can test all 5 personas using these simulated accounts configured in `database.py`:
-
-| Role | Test Phone | Name / Location | Key WhatsApp Commands |
-| :--- | :--- | :--- | :--- |
-| **Farmer** | `+919876500001` | Shivanna Gowda (Mandya) | `ನಮಸ್ಕಾರ`, `1` (Mandi rate), or send a Kannada voice note |
-| **Aggregator** | `+919876500002` | Lakshmi Devi (Maddur SHG) | `menu`, `1` (Manifest), `2` (Grade batch), `3` (Truck) |
-| **Customer** | `+919876500003` | Priya Verma (Bengaluru) | `menu`, `1` (Catalog), `2` (Track order), `4` (Provenance) |
-| **Institution** | `+919876500004` | Warden Raghavan (Hostel) | `menu`, `1` (Standing orders), `3` (GST Invoice) |
-| **Delivery** | `+919876500005` | Manjunath K (Electric 3W) | `menu`, `1` (Route map), `4829` (Submit customer OTP) |
-
-*Any new/unrecognized phone number is greeted with an automatic multi-language role onboarding menu.*
+## 💬 Live In-Browser Simulator & QR Scanner
+Your web simulator and QR code generator are live 24/7 at:
+👉 **https://agrilink-whatsapp.onrender.com**

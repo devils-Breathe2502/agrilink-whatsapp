@@ -1,39 +1,34 @@
 """
-AgriLink WhatsApp Integration - Configuration Module
-Supports environment settings, provider selection, and regional language configurations.
+AgriLink WhatsApp Integration - Meta Cloud API Configuration
+Direct official integration with Meta (Facebook) WhatsApp Business Cloud API.
+Zero third-party middlemen (No Twilio).
 """
 
 import os
 
-# Twilio Settings (Default provider as per AgriLink Architecture Module M14 / Ref R31)
-TWILIO_ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID", "AC_mock_twilio_account_sid")
-TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN", "mock_twilio_auth_token")
-TWILIO_WHATSAPP_NUMBER = os.getenv("TWILIO_WHATSAPP_NUMBER", "whatsapp:+14155238886")
-
-# Meta Cloud API Settings (Optional direct provider)
+# Meta Developer App Settings (from developers.facebook.com)
 WHATSAPP_CLOUD_API_TOKEN = os.getenv("WHATSAPP_CLOUD_API_TOKEN", "")
 WHATSAPP_PHONE_NUMBER_ID = os.getenv("WHATSAPP_PHONE_NUMBER_ID", "")
 WHATSAPP_VERIFY_TOKEN = os.getenv("WHATSAPP_VERIFY_TOKEN", "agrilink_sfic_2026_secret")
+GRAPH_API_VERSION = "v21.0"
+META_GRAPH_URL = f"https://graph.facebook.com/{GRAPH_API_VERSION}"
 
-# Supabase PostgreSQL Settings
+# Supabase / PostgreSQL Settings
 SUPABASE_URL = os.getenv("SUPABASE_URL", "https://your-project.supabase.co")
-SUPABASE_SERVICE_ROLE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY", "your-supabase-key")
+SUPABASE_SERVICE_ROLE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY", "")
 
-# Speech & AI API Settings (Bhashini / OpenAI Whisper / Gemini)
-AI_API_KEY = os.getenv("AI_API_KEY", "")
-
-# AgriLink Business Model Ratios (Illustrative 68-10-14-8 model)
+# AgriLink 4-Way Payout Split Policy (SFIC 2026 Innovation Model)
 ALLOCATION_RATIOS = {
-    "farmer_share": 0.68,       # 68% direct to producer
-    "aggregator_share": 0.10,   # 10% to SHG / Hub
-    "delivery_share": 0.14,     # 14% to local youth / vehicle
-    "platform_share": 0.08      # 8% platform fee
+    "farmer_share": 0.68,       # 68% direct to smallholder farmer
+    "aggregator_share": 0.10,   # 10% to village SHG / collection hub
+    "delivery_share": 0.14,     # 14% to local youth / vehicle fleet
+    "platform_share": 0.08      # 8% AgriLink platform fee
 }
 
-# Supported Regional Languages
+# Regional Language Support
 SUPPORTED_LANGUAGES = {
-    "en": "English",
     "kn": "ಕನ್ನಡ (Kannada)",
     "hi": "हिन्दी (Hindi)",
+    "en": "English",
     "te": "తెలుగు (Telugu)"
 }
