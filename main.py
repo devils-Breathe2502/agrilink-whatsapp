@@ -96,36 +96,43 @@ async def handle_meta_webhook(request: Request, background_tasks: BackgroundTask
 async def process_meta_event(payload: dict):
     """Background task to parse Meta WhatsApp message and send AgriLink reply."""
     try:
-        entries = payload.get("entry", [])
-        if not entries:
+        values_to_process = []
+        if "entry" in payload:
+            for entry in payload.get("entry", []):
+                for change in entry.get("changes", []):
+                    val = change.get("value")
+                    if val:
+                        values_to_process.append(val)
+        elif "value" in payload:
+            values_to_process.append(payload.get("value"))
+
+        if not values_to_process:
+            print("[META WEBHOOK] No message values found in payload.")
             return
 
-        for entry in entries:
-            for change in entry.get("changes", []):
-                value = change.get("value", {})
-                messages = value.get("messages", [])
+        for value in values_to_process:
+            messages = value.get("messages", [])
+            if not messages:
+                continue
 
-                if not messages:
-                    continue
+            msg = messages[0]
+            from_phone = msg.get("from", "")  # e.g., '918800714533'
+            msg_type = msg.get("type", "text")
+            body = ""
+            media_url = None
+            media_content_type = None
 
-                msg = messages[0]
-                from_phone = msg.get("from", "")  # e.g., '918800714533'
-                msg_type = msg.get("type", "text")
-                body = ""
-                media_url = None
-                media_content_type = None
+            # Text Message
+            if msg_type == "text":
+                body = msg.get("text", {}).get("body", "")
 
-                # Text Message
-                if msg_type == "text":
-                    body = msg.get("text", {}).get("body", "")
-
-                # Interactive Button Click
-                elif msg_type == "interactive":
-                    interactive = msg.get("interactive", {})
-                    if interactive.get("type") == "button_reply":
-                        body = interactive.get("button_reply", {}).get("id", "")
-                    elif interactive.get("type") == "list_reply":
-                        body = interactive.get("list_reply", {}).get("id", "")
+            # Interactive Button Click
+            elif msg_type == "interactive":
+                interactive = msg.get("interactive", {})
+                if interactive.get("type") == "button_reply":
+                    body = interactive.get("button_reply", {}).get("id", "")
+                elif interactive.get("type") == "list_reply":
+                    body = interactive.get("list_reply", {}).get("id", "")
 
                 # Voice Note / Audio
                 elif msg_type == "audio":
